@@ -7,7 +7,7 @@ export type TrackedToken = {
   decimals: number;
 };
 
-/** Robinhood Chain mainnet (4663) mainstream assets. */
+/** Robinhood Chain mainnet (4663) assets shown in the wallet balance card. */
 export const MAINNET_TRACKED_TOKENS: TrackedToken[] = [
   {
     symbol: 'WETH',

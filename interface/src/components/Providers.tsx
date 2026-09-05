@@ -2,8 +2,8 @@ import { PrivyProvider, type PrivyClientConfig } from '@privy-io/react-auth';
 import { WagmiProvider } from '@privy-io/wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { ReactNode } from 'react';
-import { robinhoodChain } from './chain';
-import { wagmiConfig } from './wagmi';
+import { robinhoodChain } from '../constants/chain';
+import { wagmiConfig } from '../lib/wagmi';
 
 const queryClient = new QueryClient();
 

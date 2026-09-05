@@ -1,6 +1,6 @@
 import { createConfig } from '@privy-io/wagmi';
 import { http } from 'wagmi';
-import { robinhoodChain, rpcHttpUrl } from './chain';
+import { robinhoodChain, rpcHttpUrl } from '../constants/chain';
 
 export const wagmiConfig = createConfig({
   chains: [robinhoodChain],

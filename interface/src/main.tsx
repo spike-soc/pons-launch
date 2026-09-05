@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { App, PrivyConnectedApp } from './App';
-import { AppProviders } from './providers';
+import { AppProviders } from './components/Providers';
 import './styles.css';
 
 const privyAppId = import.meta.env.VITE_PRIVY_APP_ID || '';

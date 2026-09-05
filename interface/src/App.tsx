@@ -1,66 +1,17 @@
-import { useLogin, useLogout, usePrivy, useWallets } from '@privy-io/react-auth';
-import { useSetActiveWallet } from '@privy-io/wagmi';
 import { ChevronDown, ChevronLeft, ImageIcon, LockKeyhole } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
-import { useAccount, useChainId } from 'wagmi';
-import { robinhoodChain } from './chain';
-import { WalletAccountCard } from './WalletAccountCard';
+import { useState } from 'react';
+import { MemeTokenCard } from './components/MemeTokenCard';
+import { WalletAccountCard } from './components/WalletAccountCard';
+import { type AuthView, useSyncedPrivyAuth } from './hooks/useSyncedPrivyAuth';
+import { useMemeLaunchCards } from './hooks/useMemeLaunchCards';
 
 type AppProps = {
-  auth: {
-    authenticated: boolean;
-    ready: boolean;
-    walletAddress?: string;
-    chainId?: number;
-    chainReady: boolean;
-    privyConfigured: boolean;
-    onAuthClick: () => void;
-  };
+  auth: AuthView;
 };
 
 export function PrivyConnectedApp() {
-  const { ready, authenticated, user } = usePrivy();
-  const { login } = useLogin();
-  const { logout } = useLogout();
-  const { wallets } = useWallets();
-  const { setActiveWallet } = useSetActiveWallet();
-  const { address, isConnected } = useAccount();
-  const chainId = useChainId();
-
-  const primaryWallet = useMemo(() => {
-    return (
-      address ||
-      user?.wallet?.address ||
-      user?.linkedAccounts?.find((account) => account.type === 'wallet')?.address
-    );
-  }, [address, user]);
-
-  useEffect(() => {
-    if (!authenticated || !wallets.length) return;
-
-    const preferred =
-      wallets.find((wallet) => wallet.address.toLowerCase() === primaryWallet?.toLowerCase()) ||
-      wallets[0];
-
-    if (!preferred) return;
-    if (address && preferred.address.toLowerCase() === address.toLowerCase()) return;
-
-    void setActiveWallet(preferred);
-  }, [authenticated, wallets, primaryWallet, address, setActiveWallet]);
-
-  return (
-    <App
-      auth={{
-        ready,
-        authenticated,
-        walletAddress: primaryWallet,
-        chainId,
-        chainReady: isConnected && chainId === robinhoodChain.id,
-        privyConfigured: true,
-        onAuthClick: () => (authenticated ? logout() : login())
-      }}
-    />
-  );
+  const auth = useSyncedPrivyAuth();
+  return <App auth={auth} />;
 }
 
 export function App({ auth }: AppProps) {
@@ -74,8 +25,11 @@ export function App({ auth }: AppProps) {
   const [xProfile, setXProfile] = useState('');
   const [telegram, setTelegram] = useState('');
   const [developerBuy, setDeveloperBuy] = useState('');
+  const { cards: memeCards, isLoading: memeLoading } = useMemeLaunchCards();
 
-  const canLaunch = Boolean(name.trim() && ticker.trim() && description.trim() && auth.authenticated);
+  const canLaunch = Boolean(
+    name.trim() && ticker.trim() && description.trim() && auth.authenticated
+  );
   const displayName = name.trim() || 'Your token';
   const displayTicker = ticker.trim() || 'ticker';
   const hasImage = Boolean(imageUrl.trim());
@@ -89,25 +43,22 @@ export function App({ auth }: AppProps) {
         </button>
 
         <div className="top-actions">
-          {auth.authenticated ? (
-            <WalletAccountCard
-              address={auth.walletAddress}
-              chainId={auth.chainId}
-              chainReady={auth.chainReady}
-              onDisconnect={auth.onAuthClick}
-            />
-          ) : (
+          {!auth.authenticated ? (
             <button
               className="login-button"
               type="button"
               disabled={!auth.privyConfigured || !auth.ready}
               onClick={auth.onAuthClick}
-              title={auth.privyConfigured ? 'Connect with Privy' : 'Set VITE_PRIVY_APP_ID to enable Privy'}
+              title={
+                auth.privyConfigured
+                  ? 'Connect with Privy'
+                  : 'Set VITE_PRIVY_APP_ID to enable Privy'
+              }
             >
               <LockKeyhole size={14} />
               <span>{auth.privyConfigured ? 'Login' : 'Privy app id required'}</span>
             </button>
-          )}
+          ) : null}
           <span className="version-pill">v2</span>
         </div>
       </header>
@@ -226,45 +177,68 @@ export function App({ auth }: AppProps) {
         </form>
 
         <aside className="preview-stage" aria-label="Token preview">
-          <div className="token-card">
-            <span className="preview-image">
-              {hasImage ? (
-                <img src={imageUrl} alt={`${displayName} artwork`} />
-              ) : (
-                <ImageIcon size={18} strokeWidth={1.7} />
-              )}
-            </span>
-            <h2>{displayName}</h2>
-            <p>{displayTicker}</p>
+          <div className="preview-stack">
+            {auth.authenticated ? (
+              <WalletAccountCard
+                address={auth.walletAddress}
+                chainId={auth.chainId}
+                chainReady={auth.chainReady}
+                onDisconnect={auth.onAuthClick}
+              />
+            ) : null}
 
-            <dl>
-              <div>
-                <dt>Launch fee</dt>
-                <dd>
-                  0.0005 <span className="mini-eth">◆</span>
-                </dd>
+            <div className="token-card">
+              <span className="preview-image">
+                {hasImage ? (
+                  <img src={imageUrl} alt={`${displayName} artwork`} />
+                ) : (
+                  <ImageIcon size={18} strokeWidth={1.7} />
+                )}
+              </span>
+              <h2>{displayName}</h2>
+              <p>{displayTicker}</p>
+
+              <dl>
+                <div>
+                  <dt>Launch fee</dt>
+                  <dd>
+                    0.0005 <span className="mini-eth">◆</span>
+                  </dd>
+                </div>
+                <div>
+                  <dt>Paired with</dt>
+                  <dd>ETH</dd>
+                </div>
+                <div>
+                  <dt>Trade fee</dt>
+                  <dd>1.00%</dd>
+                </div>
+                <div>
+                  <dt>Launch window</dt>
+                  <dd>99% snipe tax, 3s</dd>
+                </div>
+                <div>
+                  <dt>Graduation</dt>
+                  <dd>4.2 ETH</dd>
+                </div>
+                <div>
+                  <dt>Liquidity</dt>
+                  <dd>Locked</dd>
+                </div>
+              </dl>
+            </div>
+
+            <section className="meme-feed" aria-label="Meme launches">
+              <div className="meme-feed-head">
+                <h2>Meme launches</h2>
+                <span>{memeLoading ? 'Loading…' : `${memeCards.length} tokens`}</span>
               </div>
-              <div>
-                <dt>Paired with</dt>
-                <dd>ETH</dd>
+              <div className="meme-feed-grid">
+                {memeCards.map((item) => (
+                  <MemeTokenCard key={item.token} item={item} />
+                ))}
               </div>
-              <div>
-                <dt>Trade fee</dt>
-                <dd>1.00%</dd>
-              </div>
-              <div>
-                <dt>Launch window</dt>
-                <dd>99% snipe tax, 3s</dd>
-              </div>
-              <div>
-                <dt>Graduation</dt>
-                <dd>4.2 ETH</dd>
-              </div>
-              <div>
-                <dt>Liquidity</dt>
-                <dd>Locked</dd>
-              </div>
-            </dl>
+            </section>
           </div>
         </aside>
       </section>

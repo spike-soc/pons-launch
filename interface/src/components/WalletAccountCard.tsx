@@ -1,9 +1,7 @@
 import { LogOut } from 'lucide-react';
-import { useMemo } from 'react';
-import { erc20Abi, formatUnits, type Address } from 'viem';
-import { useBalance, useReadContracts } from 'wagmi';
-import { robinhoodChain } from './chain';
-import { getTrackedTokens } from './tokens';
+import { robinhoodChain } from '../constants/chain';
+import { useWalletTokenBalances } from '../hooks/useWalletTokenBalances';
+import { formatAddress, formatEthBalance, formatTokenAmount } from '../lib/format';
 
 type WalletAccountCardProps = {
   address?: string;
@@ -12,46 +10,14 @@ type WalletAccountCardProps = {
   onDisconnect: () => void;
 };
 
-function formatAddress(address?: string) {
-  if (!address) return '—';
-  return `${address.slice(0, 6)}...${address.slice(-4)}`;
-}
-
-function formatAmount(value?: bigint, decimals = 18, maxFractionDigits = 4) {
-  if (value === undefined) return '—';
-  const raw = Number(formatUnits(value, decimals));
-  if (!Number.isFinite(raw)) return '—';
-  if (raw === 0) return '0';
-  if (raw < 0.0001) return '<0.0001';
-  return raw.toLocaleString(undefined, {
-    maximumFractionDigits: maxFractionDigits,
-    minimumFractionDigits: 0
-  });
-}
-
 export function WalletAccountCard({
   address,
   chainId,
   chainReady,
   onDisconnect
 }: WalletAccountCardProps) {
-  const trackedTokens = useMemo(() => getTrackedTokens(chainId ?? 0), [chainId]);
-  const owner = address as Address | undefined;
-
-  const { data: ethBalance, isLoading: ethLoading } = useBalance({
-    address: owner,
-    query: { enabled: Boolean(owner) }
-  });
-
-  const { data: tokenBalances, isLoading: tokensLoading } = useReadContracts({
-    contracts: trackedTokens.map((token) => ({
-      address: token.address,
-      abi: erc20Abi,
-      functionName: 'balanceOf' as const,
-      args: owner ? [owner] : undefined
-    })),
-    query: { enabled: Boolean(owner) && trackedTokens.length > 0 }
-  });
+  const { trackedTokens, ethBalance, ethLoading, tokenBalances, tokensLoading } =
+    useWalletTokenBalances(address, chainId);
 
   const chainLabel =
     chainId === robinhoodChain.id
@@ -75,7 +41,9 @@ export function WalletAccountCard({
       <div className="wallet-card-row wallet-card-eth">
         <span>ETH</span>
         <strong>
-          {ethLoading ? '…' : formatAmount(ethBalance?.value, ethBalance?.decimals ?? 18)}
+          {ethLoading
+            ? '…'
+            : formatEthBalance(ethBalance?.value, ethBalance?.decimals ?? 18)}
         </strong>
       </div>
 
@@ -94,7 +62,7 @@ export function WalletAccountCard({
                     <strong>{token.symbol}</strong>
                     <small>{token.name}</small>
                   </div>
-                  <span>{tokensLoading ? '…' : formatAmount(value, token.decimals)}</span>
+                  <span>{tokensLoading ? '…' : formatTokenAmount(value, token.decimals)}</span>
                 </li>
               );
             })}
