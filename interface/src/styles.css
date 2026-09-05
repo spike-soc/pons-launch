@@ -1,22 +1,36 @@
 :root {
   color: #171717;
-  background: #eeeeed;
+  background: #e8e8e6;
   font-family:
     "SF Pro Display", "SF Pro Text", ui-sans-serif, system-ui, -apple-system,
     BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 16px;
   font-synthesis: none;
   text-rendering: geometricPrecision;
   -webkit-font-smoothing: antialiased;
+  --page-bg: #e8e8e6;
+  --card-bg: #ffffff;
+  --card-radius: 22px;
+  --card-border: 1px solid rgba(18, 18, 18, 0.06);
+  --card-shadow: 0 10px 28px rgba(30, 30, 30, 0.08);
 }
 
 * {
   box-sizing: border-box;
 }
 
+html {
+  overflow-y: auto;
+  background: var(--page-bg);
+}
+
 body {
   min-width: 320px;
   min-height: 100vh;
   margin: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: var(--page-bg);
 }
 
 button,
@@ -31,10 +45,9 @@ button {
 
 .app-shell {
   min-height: 100vh;
-  padding: 10px 36px 20px;
-  background:
-    radial-gradient(circle at 78% 56%, rgba(255, 255, 255, 0.68), transparent 30%),
-    linear-gradient(180deg, #eeeeed 0%, #e7e7e6 100%);
+  padding: 10px 36px 32px;
+  overflow: visible;
+  background: var(--page-bg);
 }
 
 .topbar {
@@ -61,10 +74,10 @@ button {
 
 .back-button {
   gap: 6px;
-  height: 36px;
-  padding: 0 14px 0 10px;
+  height: 40px;
+  padding: 0 16px 0 12px;
   border-radius: 999px;
-  font-size: 14px;
+  font-size: 15px;
   letter-spacing: 0;
 }
 
@@ -77,11 +90,11 @@ button {
 
 .login-button {
   gap: 6px;
-  min-width: 88px;
-  height: 32px;
-  padding: 0 12px;
+  min-width: 96px;
+  height: 36px;
+  padding: 0 14px;
   border-radius: 999px;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 650;
 }
 
@@ -91,10 +104,10 @@ button {
 }
 
 .version-pill {
-  width: 48px;
-  height: 36px;
+  width: 52px;
+  height: 40px;
   border-radius: 999px;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 650;
 }
 
@@ -105,12 +118,11 @@ button {
   flex-direction: column;
   gap: 8px;
   width: 100%;
-  padding: 12px;
-  border: 1.5px solid rgba(255, 255, 255, 0.88);
-  border-radius: 22px;
-  background: rgba(250, 250, 250, 0.9);
-  box-shadow: 0 24px 40px rgba(42, 42, 42, 0.12);
-  backdrop-filter: blur(16px);
+  padding: 14px;
+  border: var(--card-border);
+  border-radius: var(--card-radius);
+  background: var(--card-bg);
+  box-shadow: var(--card-shadow);
 }
 
 .wallet-card-row {
@@ -123,12 +135,12 @@ button {
 
 .wallet-card-row > span {
   color: #8a8a8a;
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .wallet-card-row > strong {
   color: #1f1f1f;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 650;
   text-align: right;
   overflow: hidden;
@@ -158,7 +170,7 @@ button {
 .wallet-token-list > p {
   margin: 0;
   color: #8a8a8a;
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .wallet-token-list ul {
@@ -190,13 +202,13 @@ button {
 
 .wallet-token-list li strong {
   color: #222;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 650;
 }
 
 .wallet-token-list li small {
   color: #9a9a9a;
-  font-size: 10px;
+  font-size: 12px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -205,13 +217,13 @@ button {
 .wallet-token-list li > span {
   flex-shrink: 0;
   color: #222;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
 }
 
 .wallet-token-empty {
   color: #9a9a9a;
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .wallet-disconnect {
@@ -226,7 +238,7 @@ button {
   border-radius: 10px;
   background: #f4f4f3;
   color: #333;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 650;
 }
 
@@ -237,28 +249,33 @@ button {
 .launch-panel {
   display: grid;
   grid-template-columns: minmax(420px, 1.25fr) minmax(280px, 0.72fr);
+  align-items: start;
+  gap: 18px;
   min-height: calc(100vh - 56px);
-  max-height: calc(100vh - 56px);
   margin-top: 10px;
-  overflow: hidden;
-  border-radius: 20px 20px 0 0;
-  background: #f9f9f8;
-  box-shadow: 0 18px 36px rgba(30, 30, 30, 0.12);
+  overflow: visible;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
 }
 
 .token-form {
   display: flex;
   flex-direction: column;
   min-height: 0;
-  padding: 22px 28px 18px;
-  overflow: auto;
+  padding: 24px 28px 28px;
+  overflow: visible;
+  border: var(--card-border);
+  border-radius: var(--card-radius);
+  background: var(--card-bg);
+  box-shadow: var(--card-shadow);
 }
 
 .token-form h1 {
-  margin: 0 0 14px;
-  font-size: 28px;
+  margin: 0 0 16px;
+  font-size: 32px;
   font-weight: 520;
-  line-height: 1;
+  line-height: 1.1;
   letter-spacing: 0;
 }
 
@@ -274,14 +291,24 @@ button {
   margin-bottom: 10px;
 }
 
-.field > span {
+.field > span,
+.field-label {
   color: #8b8b8b;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.field-hint {
+  display: block;
+  margin-top: 4px;
+  color: #8a8a8a;
   font-size: 12px;
-  line-height: 1;
+  line-height: 1.35;
 }
 
 .field input,
 .field textarea,
+.field select,
 .asset-select,
 .developer-buy,
 .image-picker {
@@ -295,10 +322,11 @@ button {
 }
 
 .field input,
+.field select,
 .asset-select {
-  height: 40px;
+  height: 44px;
   padding: 0 14px;
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .field input::placeholder,
@@ -314,24 +342,24 @@ button {
 }
 
 .field textarea {
-  min-height: 56px;
-  max-height: 72px;
-  padding: 10px 14px;
+  min-height: 72px;
+  max-height: 140px;
+  padding: 12px 14px;
   resize: vertical;
-  font-size: 14px;
-  line-height: 1.35;
+  font-size: 16px;
+  line-height: 1.4;
 }
 
 .image-picker {
   display: flex;
   align-items: center;
   gap: 12px;
-  min-height: 52px;
-  padding: 8px 12px;
+  min-height: 56px;
+  padding: 10px 14px;
   border-style: dashed;
   color: #222222;
   text-align: left;
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .image-box,
@@ -389,23 +417,23 @@ button {
 .field-note {
   margin: -2px 0 10px;
   color: #919191;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .developer-buy {
   position: relative;
-  min-height: 64px;
-  padding: 8px 96px 8px 14px;
+  min-height: 72px;
+  padding: 10px 96px 10px 14px;
 }
 
 .developer-buy input {
-  height: 28px;
+  height: 32px;
   padding: 0;
   border: 0;
   border-radius: 0;
   background: transparent;
   color: #757575;
-  font-size: 22px;
+  font-size: 24px;
   box-shadow: none;
 }
 
@@ -417,7 +445,7 @@ button {
   display: block;
   margin-top: 2px;
   color: #8a8a8a;
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .buy-asset {
@@ -427,7 +455,7 @@ button {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 650;
 }
 
@@ -437,14 +465,73 @@ button {
   justify-content: space-between;
   width: 100%;
   margin-top: 2px;
-  padding: 12px 4px;
+  padding: 14px 4px;
   border: 0;
   border-top: 1px solid #e7e7e7;
   border-bottom: 1px solid #e7e7e7;
   background: transparent;
   color: #222222;
-  font-size: 14px;
+  font-size: 16px;
   text-align: left;
+}
+
+.advanced-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 8px 0 4px;
+  padding: 10px 12px 4px;
+  border: 1.5px solid #ebebeb;
+  border-radius: 14px;
+  background: #f7f7f6;
+}
+
+.image-picker-static {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+  min-height: 48px;
+  padding: 8px 12px;
+  pointer-events: none;
+}
+
+.salt-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+}
+
+.salt-refresh {
+  height: 44px;
+  padding: 0 14px;
+  border: 1.5px solid #e8e8e8;
+  border-radius: 12px;
+  background: #fff;
+  color: #333;
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.checkbox-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  font-size: 15px;
+  color: #333;
+}
+
+.form-error {
+  color: #b42318 !important;
+  font-size: 14px !important;
+  font-weight: 600;
+}
+
+.form-tx {
+  color: #6a6a6a !important;
+  font-size: 13px !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 .submit-area {
@@ -458,17 +545,17 @@ button {
   justify-content: space-between;
   margin: 0 0 8px;
   color: #9d9d9d;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .submit-button {
   width: 100%;
-  height: 48px;
+  height: 52px;
   border: 0;
   border-radius: 14px;
   background: #eaff9c;
   color: #919191;
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 680;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
@@ -487,19 +574,13 @@ button {
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding: 24px;
-  padding-top: 0;
-  background: #e9e9e9;
-  overflow: auto;
+  padding: 0;
+  background: transparent;
+  overflow: visible;
 }
 
 .preview-stage::before {
-  position: absolute;
-  inset: 18% 0 auto;
-  height: 280px;
-  content: "";
-  background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.82), transparent 68%);
-  filter: blur(10px);
+  display: none;
 }
 
 .preview-stack {
@@ -516,11 +597,10 @@ button {
   z-index: 1;
   width: 100%;
   padding: 20px;
-  border: 1.5px solid rgba(255, 255, 255, 0.88);
-  border-radius: 22px;
-  background: rgba(250, 250, 250, 0.83);
-  box-shadow: 0 24px 40px rgba(42, 42, 42, 0.14);
-  backdrop-filter: blur(16px);
+  border: var(--card-border);
+  border-radius: var(--card-radius);
+  background: var(--card-bg);
+  box-shadow: var(--card-shadow);
 }
 
 .preview-image {
@@ -534,9 +614,9 @@ button {
 .token-card h2 {
   margin: 0 0 4px;
   overflow-wrap: anywhere;
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 540;
-  line-height: 1.08;
+  line-height: 1.15;
   letter-spacing: 0;
 }
 
@@ -544,7 +624,7 @@ button {
   margin: 0 0 12px;
   color: #8a8a8a;
   overflow-wrap: anywhere;
-  font-size: 13px;
+  font-size: 15px;
 }
 
 .token-card dl {
@@ -557,14 +637,14 @@ button {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  min-height: 34px;
+  min-height: 38px;
   border-bottom: 1px solid #e1e1e1;
 }
 
 .token-card dt,
 .token-card dd {
   margin: 0;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .token-card dt {
@@ -607,10 +687,12 @@ button {
     grid-template-columns: 1fr;
     max-height: none;
     min-height: auto;
+    overflow: visible;
   }
 
   .preview-stage {
-    min-height: 320px;
+    min-height: 0;
+    padding: 0;
   }
 }
 
@@ -636,11 +718,13 @@ button {
 
   .launch-panel {
     margin-top: 8px;
-    border-radius: 16px 16px 0 0;
+    border-radius: 0;
+    gap: 14px;
   }
 
   .token-form {
     padding: 18px 16px 16px;
+    border-radius: 18px;
   }
 
   .token-form h1 {
@@ -705,7 +789,7 @@ button {
   }
 
   .preview-stage {
-    padding: 20px 14px 28px;
+    padding: 0;
   }
 
   .token-card {
@@ -744,13 +828,13 @@ button {
 .meme-feed-head h2 {
   margin: 0;
   color: #222;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 650;
 }
 
 .meme-feed-head span {
   color: #8a8a8a;
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .meme-feed-grid {
@@ -761,10 +845,10 @@ button {
 
 .meme-card {
   overflow: hidden;
-  border: 1.5px solid rgba(255, 255, 255, 0.9);
-  border-radius: 22px;
-  background: rgba(250, 250, 250, 0.95);
-  box-shadow: 0 18px 32px rgba(42, 42, 42, 0.12);
+  border: var(--card-border);
+  border-radius: var(--card-radius);
+  background: var(--card-bg);
+  box-shadow: var(--card-shadow);
 }
 
 .meme-card-media {
@@ -800,12 +884,12 @@ button {
   align-items: center;
   justify-content: center;
   min-width: 34px;
-  height: 22px;
+  height: 24px;
   padding: 0 8px;
   border-radius: 999px;
   background: #2f6bff;
   color: #fff;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
 }
 
@@ -825,9 +909,9 @@ button {
 .meme-card-title-row h3 {
   margin: 0;
   color: #111;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 700;
-  line-height: 1.15;
+  line-height: 1.2;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -848,7 +932,7 @@ button {
 .meme-card-symbol {
   margin: 0;
   color: #9a9a9a;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   letter-spacing: 0.02em;
   text-transform: uppercase;
@@ -857,8 +941,8 @@ button {
 .meme-card-desc {
   margin: 2px 0 0;
   color: #8a8a8a;
-  font-size: 11px;
-  line-height: 1.35;
+  font-size: 13px;
+  line-height: 1.4;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -868,13 +952,13 @@ button {
 .meme-card-mc {
   margin: 4px 0 0;
   color: #111;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
 }
 
 .meme-card-mc span {
   color: #9a9a9a;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
 }
 
@@ -902,7 +986,7 @@ button {
 
 .meme-card-progress em {
   color: #9a9a9a;
-  font-size: 11px;
+  font-size: 13px;
   font-style: normal;
 }
 
@@ -913,7 +997,7 @@ button {
   gap: 8px;
   margin-top: 8px;
   color: #9a9a9a;
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .meme-card-footer strong {

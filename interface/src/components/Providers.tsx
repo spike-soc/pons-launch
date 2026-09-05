@@ -16,6 +16,7 @@ const privyConfig: PrivyClientConfig = {
   loginMethods: ['email', 'wallet'],
   defaultChain: robinhoodChain,
   supportedChains: [robinhoodChain],
+  // Keep session across full page reloads (localStorage).
   embeddedWallets: {
     ethereum: {
       createOnLogin: 'users-without-wallets'

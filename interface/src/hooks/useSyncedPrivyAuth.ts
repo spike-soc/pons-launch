@@ -10,6 +10,7 @@ export type AuthView = {
   walletAddress?: string;
   chainId?: number;
   chainReady: boolean;
+  reconnecting?: boolean;
   privyConfigured: boolean;
   onAuthClick: () => void;
 };
@@ -32,8 +33,9 @@ export function useSyncedPrivyAuth(): AuthView {
     );
   }, [address, user]);
 
+  // Wait until Privy has restored the session from storage before syncing wagmi.
   useEffect(() => {
-    if (!authenticated || !wallets.length) return;
+    if (!ready || !authenticated || !wallets.length) return;
 
     const preferred =
       wallets.find(
@@ -44,15 +46,23 @@ export function useSyncedPrivyAuth(): AuthView {
     if (address && preferred.address.toLowerCase() === address.toLowerCase()) return;
 
     void setActiveWallet(preferred);
-  }, [authenticated, wallets, primaryWallet, address, setActiveWallet]);
+  }, [ready, authenticated, wallets, primaryWallet, address, setActiveWallet]);
+
+  const reconnecting = ready && authenticated && !isConnected;
 
   return {
     ready,
-    authenticated,
+    authenticated: ready && authenticated,
     walletAddress: primaryWallet,
     chainId,
-    chainReady: isConnected && chainId === robinhoodChain.id,
+    chainReady:
+      ready && authenticated && isConnected && chainId === robinhoodChain.id,
+    reconnecting,
     privyConfigured: true,
-    onAuthClick: () => (authenticated ? logout() : login())
+    onAuthClick: () => {
+      if (!ready) return;
+      if (authenticated) logout();
+      else login();
+    }
   };
 }

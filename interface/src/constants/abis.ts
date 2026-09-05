@@ -9,7 +9,22 @@ export const factoryAbi = parseAbi([
   'function launchFee() view returns (uint256)',
   'function previewLaunchEconomics(uint256 launchConfigId, address pairToken) view returns (bytes32)',
   'function maxCreatorTaxBps() view returns (uint256)',
-  'function canLaunch(address account) view returns (bool)'
+  'function canLaunch(address account) view returns (bool)',
+  'function approvedPairTokens(address pairToken) view returns (bool)'
+]);
+
+/** Nested structs + factory launchToken with snipe exemptions. */
+export const launchTokenWriteAbi = parseAbi([
+  'struct Socials { string twitter; string telegram; string discord; string website; string farcaster; }',
+  'struct TokenParams { string name; string symbol; string logo; string description; Socials socials; address creatorFeeRecipient; uint16 creatorTaxBps; bool buybackEnabled; bytes32 expectedEconomics; bytes32 salt; }',
+  'function launchToken(TokenParams params, uint256 launchConfigId, address pairToken, address[] snipeTaxExemptions) payable returns (address token, address curve)'
+]);
+
+/** Launch-and-buy router (atomic create + first buy). */
+export const launchAndBuyAbi = parseAbi([
+  'struct Socials { string twitter; string telegram; string discord; string website; string farcaster; }',
+  'struct TokenParams { string name; string symbol; string logo; string description; Socials socials; address creatorFeeRecipient; uint16 creatorTaxBps; bool buybackEnabled; bytes32 expectedEconomics; bytes32 salt; }',
+  'function launchAndBuy(TokenParams params, uint256 launchConfigId, address pairToken, uint256 quoteIn, uint256 minTokensOut, address recipient, address[] snipeTaxExemptions) payable returns (address token, address curve, uint256 tokensOut)'
 ]);
 
 export const curveAbi = parseAbi([
@@ -32,3 +47,24 @@ export const launcherTokenAbi = parseAbi([
   'function symbol() view returns (string)',
   'function getTokenInfo() view returns (address tokenDeployer, string tokenLogo, string tokenDescription, Socials tokenSocials)'
 ]);
+
+export type SocialsParams = {
+  twitter: string;
+  telegram: string;
+  discord: string;
+  website: string;
+  farcaster: string;
+};
+
+export type TokenParamsInput = {
+  name: string;
+  symbol: string;
+  logo: string;
+  description: string;
+  socials: SocialsParams;
+  creatorFeeRecipient: `0x${string}`;
+  creatorTaxBps: number;
+  buybackEnabled: boolean;
+  expectedEconomics: `0x${string}`;
+  salt: `0x${string}`;
+};

@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { type Address } from 'viem';
 import { useReadContracts } from 'wagmi';
 import { curveAbi, factoryAbi, launcherTokenAbi } from '../constants/abis';
@@ -108,13 +108,6 @@ export function useMemeLaunchCards() {
     () => (launchReads.data ?? []).map((row) => asLaunchedToken(row.result)),
     [launchReads.data]
   );
-
-  useEffect(() => {
-    tokens.forEach((token, index) => {
-      const raw = launchReads.data?.[index];
-      console.log(token, '==>', raw?.result ?? raw);
-    });
-  }, [tokens, launchReads.data]);
 
   const metaReads = useReadContracts({
     contracts: tokens.flatMap((token) => [

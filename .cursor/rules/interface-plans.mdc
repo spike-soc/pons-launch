@@ -1,0 +1,46 @@
+---
+description: 本仓库计划文档统一放在 interface/plans/
+alwaysApply: true
+---
+
+# 计划文档存放
+
+本仓库（ponsfamily）的 Cursor / Agent **实现计划、对接计划、参数清单**一律写在：
+
+```text
+interface/plans/
+```
+
+## 必须遵守
+
+- 新建或更新 plan 时，路径使用 [`interface/plans/`](interface/plans/)，例如 [`interface/plans/launch_token_params_19bd9933.plan.md`](interface/plans/launch_token_params_19bd9933.plan.md)
+- 仓库内**不要**把 plan 只留在 `~/.cursor/plans/` 或其它子项目根下；**源文件**以 `interface/plans/` 为准
+- 文件名：`snake_case` + 简短主题 + `.plan.md`（可带短 id 后缀）
+- 计划用中文标题与条目；涉及合约/前端时写清目标文件路径（如 `interface/src/...`、`contractsV2/src/v2/...`）
+
+## Cursor Plans 富预览（图表 / todos）
+
+Cursor 的 **Plans 面板**（Mermaid 图表、Build、todo 勾选）只识别：
+
+```text
+~/.cursor/plans/*.plan.md
+```
+
+因此在 `interface/plans/` 写好后，为可预览需再建符号链接（不要复制两份正文）：
+
+```bash
+ln -sfn "$PWD/interface/plans/<name>.plan.md" "$HOME/.cursor/plans/<name>.plan.md"
+```
+
+然后从 Cursor **Plans** 打开该文件，不要只在编辑器里当普通 `.md` 打开（普通打开不会出现图表预览 UI）。
+
+## 示例
+
+```text
+✅ interface/plans/launch_token_params_19bd9933.plan.md   # 仓库源文件
+✅ ~/.cursor/plans/... -> 上述路径的 symlink          # 供 Plans 预览
+❌ 只放在 ~/.cursor/plans/ 且仓库没有副本
+❌ interface/xxx.plan.md（应在 interface/plans/ 下）
+```
+
+执行已有计划前，先读 `interface/plans/` 下对应 `.plan.md`，再改代码。
