@@ -19,7 +19,7 @@ export function App({ auth }: AppProps) {
       <Routes>
         <Route element={<AppLayout auth={auth} />}>
           <Route path="/" element={<LaunchHomePage auth={auth} />} />
-          <Route path="/memes" element={<MemeLaunchesPage />} />
+          <Route path="/memes" element={<MemeLaunchesPage auth={auth} />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>

@@ -38,7 +38,8 @@ export const curveAbi = parseAbi([
   'function readyToGraduate() view returns (bool)',
   'function graduated() view returns (bool)',
   'function isNativeQuote() view returns (bool)',
-  'function pairToken() view returns (address)'
+  'function pairToken() view returns (address)',
+  'function buy(uint256 quoteIn, uint256 minTokensOut, address recipient) payable returns (uint256 tokensOut)'
 ]);
 
 export const launcherTokenAbi = parseAbi([

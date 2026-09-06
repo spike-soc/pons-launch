@@ -10,6 +10,7 @@ import launchesJson from '../../json/pons-launches.json';
 
 export type MemeLaunchCardData = {
   token: Address;
+  curve: Address | null;
   name: string;
   symbol: string;
   logo: string;
@@ -203,6 +204,7 @@ export function useMemeLaunchCards() {
 
       const card: MemeLaunchCardData = {
         token,
+        curve: launch?.exists ? launch.curve : null,
         name: nameResult || indexed?.name || 'Unknown',
         symbol: symbolResult || indexed?.symbol || 'TOKEN',
         logo: infoResult?.[1] || indexed?.logo || '',

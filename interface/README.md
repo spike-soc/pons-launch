@@ -198,7 +198,7 @@ PrivyProvider
 | 路径 | 页面 |
 |---|---|
 | `/` | Launch token：表单 + 钱包卡 + SPI 预览卡 |
-| `/memes` | Meme launches：`MEME_TOKEN_ADDRESSES` 卡片列表（宽 400、描述 36px 省略、Buy/Sell 占位） |
+| `/memes` | Meme launches：卡片列表；点 Buy 在下方展开 ETH→token 询价面板并调用 `curve.buy` |
 
 顶栏：`Home` / `Meme launches` / Refresh，右侧 Login、v2。
 
@@ -206,7 +206,8 @@ PrivyProvider
 
 - **首页左栏**：Launch 表单（双语标签）、Advanced、仅按钮触发发币
 - **首页右栏**：已登录显示钱包卡 → SPI token 预览
-- **Meme 页**：`MEME_TOKEN_ADDRESSES` 卡片；图片跳转 pons launchpad；Buy/Sell 暂未接合约
+- **Meme 页**：卡片列表；Buy 展开询价表单（本地 quoteBuy + `curve.buy`）；Sell 仍占位；图片跳 launchpad
+- Buy 文档：[`docs/Buy.md`](docs/Buy.md)
 - **顶栏**：Home / Meme launches / Refresh、Login / Restoring…、v2 pill
 - **默认 token**：Name `SPIKE ICE`，Symbol `SPI`，logo 来自 `VITE_IMAGE_URL`
 

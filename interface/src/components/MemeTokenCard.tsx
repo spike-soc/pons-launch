@@ -11,16 +11,26 @@ const LAUNCHPAD_BASE = 'https://www.ponsfamily.com/launchpad';
 
 type MemeTokenCardProps = {
   item: MemeLaunchCardData;
+  buySelected?: boolean;
+  onBuyClick?: (item: MemeLaunchCardData) => void;
 };
 
-export function MemeTokenCard({ item }: MemeTokenCardProps) {
+export function MemeTokenCard({
+  item,
+  buySelected = false,
+  onBuyClick
+}: MemeTokenCardProps) {
   const logoUrl = resolveLogoUrl(item.logo);
   const marketCap = formatMarketCapUsd(item.marketCapUsd);
   const progress = Math.max(0, Math.min(100, item.progressPct));
   const launchpadUrl = `${LAUNCHPAD_BASE}/${item.token}`;
+  const canBuy = Boolean(item.curve) && !item.graduated;
 
   return (
-    <article className="meme-card" title={item.description || item.name}>
+    <article
+      className={buySelected ? 'meme-card meme-card-selected' : 'meme-card'}
+      title={item.description || item.name}
+    >
       <a
         className="meme-card-media"
         href={launchpadUrl}
@@ -77,10 +87,22 @@ export function MemeTokenCard({ item }: MemeTokenCardProps) {
         </div>
 
         <div className="meme-card-actions">
-          <button className="meme-card-btn meme-card-btn-buy" type="button">
+          <button
+            className="meme-card-btn meme-card-btn-buy"
+            type="button"
+            disabled={!canBuy}
+            title={
+              !item.curve
+                ? 'Curve unavailable'
+                : item.graduated
+                  ? 'Graduated'
+                  : 'Buy on bonding curve'
+            }
+            onClick={() => onBuyClick?.(item)}
+          >
             Buy
           </button>
-          <button className="meme-card-btn meme-card-btn-sell" type="button">
+          <button className="meme-card-btn meme-card-btn-sell" type="button" disabled>
             Sell
           </button>
         </div>
