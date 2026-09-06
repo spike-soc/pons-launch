@@ -7,6 +7,8 @@ import {
 } from '../lib/meme';
 import type { MemeLaunchCardData } from '../hooks/useMemeLaunchCards';
 
+const LAUNCHPAD_BASE = 'https://www.ponsfamily.com/launchpad';
+
 type MemeTokenCardProps = {
   item: MemeLaunchCardData;
 };
@@ -15,17 +17,24 @@ export function MemeTokenCard({ item }: MemeTokenCardProps) {
   const logoUrl = resolveLogoUrl(item.logo);
   const marketCap = formatMarketCapUsd(item.marketCapUsd);
   const progress = Math.max(0, Math.min(100, item.progressPct));
+  const launchpadUrl = `${LAUNCHPAD_BASE}/${item.token}`;
 
   return (
     <article className="meme-card" title={item.description || item.name}>
-      <div className="meme-card-media">
+      <a
+        className="meme-card-media"
+        href={launchpadUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={`Open ${item.name} on pons launchpad`}
+      >
         {logoUrl ? (
           <img src={logoUrl} alt={item.name} loading="lazy" />
         ) : (
           <div className="meme-card-media-fallback">{item.symbol.slice(0, 2)}</div>
         )}
         <span className="meme-card-badge">V2</span>
-      </div>
+      </a>
 
       <div className="meme-card-body">
         <div className="meme-card-title-row">
@@ -39,7 +48,11 @@ export function MemeTokenCard({ item }: MemeTokenCardProps) {
 
         <p className="meme-card-symbol">${item.symbol}</p>
 
-        {item.description ? <p className="meme-card-desc">{item.description}</p> : null}
+        {item.description ? (
+          <p className="meme-card-desc">{item.description}</p>
+        ) : (
+          <p className="meme-card-desc meme-card-desc-empty" />
+        )}
 
         {marketCap ? (
           <p className="meme-card-mc">
@@ -61,6 +74,15 @@ export function MemeTokenCard({ item }: MemeTokenCardProps) {
         <div className="meme-card-footer">
           <span>{formatAddress(item.deployer || item.token)}</span>
           <strong>{formatRelativeTime(item.latestBuyAt)}</strong>
+        </div>
+
+        <div className="meme-card-actions">
+          <button className="meme-card-btn meme-card-btn-buy" type="button">
+            Buy
+          </button>
+          <button className="meme-card-btn meme-card-btn-sell" type="button">
+            Sell
+          </button>
         </div>
       </div>
     </article>

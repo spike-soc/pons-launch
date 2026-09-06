@@ -70,7 +70,8 @@ export function getLaunchAndBuyAddress(): Address {
  * Edit this list instead of `.env`.
  */
 export const MEME_TOKEN_ADDRESSES = [
-  '0x2C87a344c6757a45c61Ba2aca47bE37942Dc1C18'
+  '0x7C0814eb37ACfec08Fdd5ebe2aaD9CB38686333E',
+  '0x2C87a344c6757a45c61Ba2aca47bE37942Dc1C18',
 ] as const satisfies readonly Address[];
 
 export type MemeTokenAddress = (typeof MEME_TOKEN_ADDRESSES)[number];

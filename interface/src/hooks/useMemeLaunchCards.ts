@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { type Address } from 'viem';
 import { useReadContracts } from 'wagmi';
 import { curveAbi, factoryAbi, launcherTokenAbi } from '../constants/abis';
@@ -90,6 +90,7 @@ function indexLaunches() {
 
 const indexedLaunches = indexLaunches();
 const factoryAddress = getFactoryAddress();
+const LOG = '[meme]';
 
 export function useMemeLaunchCards() {
   const tokens = useMemo(() => [...MEME_TOKEN_ADDRESSES] as Address[], []);
@@ -228,6 +229,32 @@ export function useMemeLaunchCards() {
     metaReads.isLoading,
     progressReads.isLoading,
   ]);
+
+  useEffect(() => {
+    if (!launchReads.data && !metaReads.data) return;
+
+    tokens.forEach((token, index) => {
+      const name = metaReads.data?.[index * 3]?.result as string | undefined;
+      const symbol = metaReads.data?.[index * 3 + 1]?.result as
+        | string
+        | undefined;
+      const tokenInfo = metaReads.data?.[index * 3 + 2]?.result;
+      const launchedRaw = launchReads.data?.[index]?.result;
+      const indexed = indexedLaunches.get(token.toLowerCase());
+
+      console.log(LOG, 'token info', {
+        name: name || indexed?.name || '(pending)',
+        address: token,
+        raw: {
+          getLaunchedToken: launchedRaw,
+          name,
+          symbol,
+          getTokenInfo: tokenInfo,
+          indexed,
+        },
+      });
+    });
+  }, [tokens, launchReads.data, metaReads.data]);
 
   return {
     tokens,
