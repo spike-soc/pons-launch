@@ -2,6 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { AppLayout } from './components/AppLayout';
 import { type AuthView, useSyncedPrivyAuth } from './hooks/useSyncedPrivyAuth';
 import { LaunchHomePage } from './pages/LaunchHomePage';
+import { LaunchpadTokenDetailPage } from './pages/LaunchpadTokenDetailPage';
 import { MemeLaunchesPage } from './pages/MemeLaunchesPage';
 
 type AppProps = {
@@ -20,6 +21,10 @@ export function App({ auth }: AppProps) {
         <Route element={<AppLayout auth={auth} />}>
           <Route path="/" element={<LaunchHomePage auth={auth} />} />
           <Route path="/memes" element={<MemeLaunchesPage auth={auth} />} />
+          <Route
+            path="/launchpad/:memeAddress"
+            element={<LaunchpadTokenDetailPage auth={auth} />}
+          />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>

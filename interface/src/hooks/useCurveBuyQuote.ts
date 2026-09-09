@@ -1,7 +1,8 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { type Address, zeroAddress } from 'viem';
 import { useReadContract, useReadContracts } from 'wagmi';
 import { curveAbi } from '../constants/abis';
+import { logContractRead } from '../lib/contractDebug';
 import {
   quoteBuyFromState,
   type CurveQuoteState,
@@ -84,6 +85,112 @@ export function useCurveBuyQuote({
     }
   });
 
+  useEffect(() => {
+    if (!ready || !curveAddress || !coreReads.data) return;
+
+    const rows = coreReads.data;
+    const readRows = [
+      {
+        method: 'Curve.getReserves',
+        row: rows[0],
+        fields: {
+          quoteReserve: '定价用 quote 储备，包含 phantomQuote，不等于真实余额',
+          tokenReserve: '定价用 token 储备',
+          display: '买入 quote 的恒定乘积公式输入'
+        }
+      },
+      {
+        method: 'Curve.sellableTokens',
+        row: rows[1],
+        fields: {
+          return: '曲线上还能卖出的 token 数量上限',
+          display: '买入 quote 结果超过该值时会钳制并计算 refund'
+        }
+      },
+      {
+        method: 'Curve.feeBps',
+        row: rows[2],
+        fields: {
+          return: '基础交易费率，bps 计价，100 bps = 1%',
+          display: '买入先扣费、卖出从 grossQuoteOut 中扣费'
+        }
+      },
+      {
+        method: 'Curve.creatorTaxBps',
+        row: rows[3],
+        fields: {
+          return: 'creator 额外税率，bps 计价',
+          display: '买入先扣 tax、卖出从 grossQuoteOut 中扣 tax'
+        }
+      },
+      {
+        method: 'Curve.realQuoteReserve',
+        row: rows[4],
+        fields: {
+          return: '真实 quote 储备，不含 phantom',
+          display: '毕业进度 raised，不能用于 AMM 定价'
+        }
+      },
+      {
+        method: 'Curve.graduationThreshold',
+        row: rows[5],
+        fields: {
+          return: '毕业阈值',
+          display: '毕业进度分母'
+        }
+      },
+      {
+        method: 'Curve.graduated',
+        row: rows[6],
+        fields: {
+          return: '是否已经毕业',
+          display: 'true 时关闭 buy'
+        }
+      },
+      {
+        method: 'Curve.currentSnipeTaxBps',
+        args: recipient ? [recipient] : [],
+        row: {
+          status: snipeRead.isSuccess
+            ? 'success'
+            : snipeRead.isError
+              ? 'error'
+              : snipeRead.isLoading
+                ? 'loading'
+                : 'idle',
+          result: snipeRead.data,
+          error: snipeRead.error
+        },
+        fields: {
+          recipient: '买入 token 接收地址',
+          return: '该 recipient 当前适用的 sniper tax，bps 计价',
+          display: '参与买入 quote 的 snipeTax 估算；读不到时前端按 0 处理'
+        }
+      }
+    ];
+
+    for (const item of readRows) {
+      logContractRead({
+        scope: 'CurveBuyQuote',
+        contract: curveAddress,
+        method: item.method,
+        args: item.args,
+        row: item.row,
+        fields: item.fields
+      });
+    }
+  }, [
+    ready,
+    curveAddress,
+    recipient,
+    coreReads.data,
+    snipeRead.data,
+    snipeRead.isSuccess,
+    snipeRead.isError,
+    snipeRead.isLoading,
+    snipeRead.error
+  ]);
+
   const state: CurveQuoteState | null = useMemo(() => {
     const rows = coreReads.data;
     if (!rows || rows.length < 4) return null;
@@ -121,19 +228,13 @@ export function useCurveBuyQuote({
   }, [state, quoteIn]);
 
   const raised = asBigint(
-    coreReads.data?.[4]?.status === 'success'
-      ? coreReads.data[4].result
-      : 0n
+    coreReads.data?.[4]?.status === 'success' ? coreReads.data[4].result : 0n
   );
   const graduationThreshold = asBigint(
-    coreReads.data?.[5]?.status === 'success'
-      ? coreReads.data[5].result
-      : 0n
+    coreReads.data?.[5]?.status === 'success' ? coreReads.data[5].result : 0n
   );
   const graduated = Boolean(
-    coreReads.data?.[6]?.status === 'success'
-      ? coreReads.data[6].result
-      : false
+    coreReads.data?.[6]?.status === 'success' ? coreReads.data[6].result : false
   );
 
   const progressPct =

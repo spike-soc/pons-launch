@@ -14,6 +14,11 @@ const DEFAULT_PONS_V2_ADDRESSES = {
   graduationGuard: '0xf5695117b99B6f6401e67d4195BD653628176C6C'
 } as const satisfies Record<string, Address>;
 
+const DEFAULT_MEME_TOKEN_ADDRESSES = [
+  '0x7C0814eb37ACfec08Fdd5ebe2aaD9CB38686333E',
+  '0x2C87a344c6757a45c61Ba2aca47bE37942Dc1C18',
+] as const satisfies readonly Address[];
+
 function envAddress(key: string, fallback: Address): Address {
   const raw = (import.meta.env[key] as string | undefined)?.trim();
   if (!raw) return fallback;
@@ -65,13 +70,35 @@ export function getLaunchAndBuyAddress(): Address {
   return PONS_V2_ADDRESSES.launchAndBuy;
 }
 
+function envAddressList(key: string, fallback: readonly Address[]): readonly Address[] {
+  const raw = (import.meta.env[key] as string | undefined)?.trim();
+  if (!raw) return fallback;
+
+  const addresses = raw
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+  if (!addresses.length) return fallback;
+
+  const valid: Address[] = [];
+  for (const address of addresses) {
+    if (!isAddress(address)) {
+      console.warn(`[pons] Invalid ${key} item=${address}, skipping`);
+      continue;
+    }
+    valid.push(getAddress(address));
+  }
+
+  return valid.length ? valid : fallback;
+}
+
 /**
  * Demo meme token addresses shown in the launch feed.
- * Edit this list instead of `.env`.
  */
-export const MEME_TOKEN_ADDRESSES = [
-  '0x7C0814eb37ACfec08Fdd5ebe2aaD9CB38686333E',
-  '0x2C87a344c6757a45c61Ba2aca47bE37942Dc1C18',
-] as const satisfies readonly Address[];
+export const MEME_TOKEN_ADDRESSES = envAddressList(
+  'VITE_MEME_TOKEN_ADDRESSES',
+  DEFAULT_MEME_TOKEN_ADDRESSES
+);
 
 export type MemeTokenAddress = (typeof MEME_TOKEN_ADDRESSES)[number];

@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev --host 0.0.0.0 --port 3050",
+    "test": "vite dev --mode test --host 0.0.0.0 --port 3050",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 0.0.0.0 --port 3050"
   },

@@ -6,11 +6,13 @@ export const factoryAbi = parseAbi([
   'function launchConfigCount() view returns (uint256)',
   'function getLaunchConfig(uint256 id) view returns (LaunchConfig)',
   'function getLaunchedToken(address token) view returns (LaunchedToken)',
+  'function getLaunchFeePolicy(address token) view returns (address protocolFeeRecipient, uint16 protocolFeeShareBps, uint16 buybackBurnBps, uint16 hookFeeBps, uint16 maxInternalPriceImpactBps)',
   'function launchFee() view returns (uint256)',
   'function previewLaunchEconomics(uint256 launchConfigId, address pairToken) view returns (bytes32)',
   'function maxCreatorTaxBps() view returns (uint256)',
   'function canLaunch(address account) view returns (bool)',
-  'function approvedPairTokens(address pairToken) view returns (bool)'
+  'function approvedPairTokens(address pairToken) view returns (bool)',
+  'function transferCreatorFeeRecipient(address token, address newRecipient)'
 ]);
 
 /** Nested structs + factory launchToken with snipe exemptions. */
@@ -39,13 +41,28 @@ export const curveAbi = parseAbi([
   'function graduated() view returns (bool)',
   'function isNativeQuote() view returns (bool)',
   'function pairToken() view returns (address)',
-  'function buy(uint256 quoteIn, uint256 minTokensOut, address recipient) payable returns (uint256 tokensOut)'
+  'function quoteFeeBalance() view returns (uint256)',
+  'function creatorTaxBalance() view returns (uint256)',
+  'function buybackQuoteBalance() view returns (uint256)',
+  'function protocolFeeShareBps() view returns (uint16)',
+  'function buy(uint256 quoteIn, uint256 minTokensOut, address recipient) payable returns (uint256 tokensOut)',
+  'function sell(uint256 tokensIn, uint256 minQuoteOut, address recipient) returns (uint256 quoteOut)',
+  'function sweepFees(uint256 minBuybackTokensOut)'
+]);
+
+export const feeEscrowAbi = parseAbi([
+  'function balanceOf(address account) view returns (uint256)',
+  'function balanceOfToken(address account, address token) view returns (uint256)',
+  'function claim()',
+  'function claimToken(address token)'
 ]);
 
 export const launcherTokenAbi = parseAbi([
   'struct Socials { string twitter; string telegram; string discord; string website; string farcaster; }',
   'function name() view returns (string)',
   'function symbol() view returns (string)',
+  'function decimals() view returns (uint8)',
+  'function totalSupply() view returns (uint256)',
   'function getTokenInfo() view returns (address tokenDeployer, string tokenLogo, string tokenDescription, Socials tokenSocials)'
 ]);
 

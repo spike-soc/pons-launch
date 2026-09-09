@@ -1,4 +1,5 @@
 import { Users } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { formatAddress } from '../lib/format';
 import {
   formatMarketCapUsd,
@@ -6,8 +7,6 @@ import {
   resolveLogoUrl
 } from '../lib/meme';
 import type { MemeLaunchCardData } from '../hooks/useMemeLaunchCards';
-
-const LAUNCHPAD_BASE = 'https://www.ponsfamily.com/launchpad';
 
 type MemeTokenCardProps = {
   item: MemeLaunchCardData;
@@ -23,7 +22,7 @@ export function MemeTokenCard({
   const logoUrl = resolveLogoUrl(item.logo);
   const marketCap = formatMarketCapUsd(item.marketCapUsd);
   const progress = Math.max(0, Math.min(100, item.progressPct));
-  const launchpadUrl = `${LAUNCHPAD_BASE}/${item.token}`;
+  const launchpadUrl = `/launchpad/${item.token}`;
   const canBuy = Boolean(item.curve) && !item.graduated;
 
   return (
@@ -31,12 +30,10 @@ export function MemeTokenCard({
       className={buySelected ? 'meme-card meme-card-selected' : 'meme-card'}
       title={item.description || item.name}
     >
-      <a
+      <Link
         className="meme-card-media"
-        href={launchpadUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label={`Open ${item.name} on pons launchpad`}
+        to={launchpadUrl}
+        aria-label={`Open ${item.name} launchpad detail`}
       >
         {logoUrl ? (
           <img src={logoUrl} alt={item.name} loading="lazy" />
@@ -44,7 +41,7 @@ export function MemeTokenCard({
           <div className="meme-card-media-fallback">{item.symbol.slice(0, 2)}</div>
         )}
         <span className="meme-card-badge">V2</span>
-      </a>
+      </Link>
 
       <div className="meme-card-body">
         <div className="meme-card-title-row">
